@@ -1,12 +1,23 @@
-VENV:=.venv/bin/python
-REQ_TEST:=requirements.test.txt
+POETRY:=poetry
 
-.venv: $(REQ_TEST)
-	python -m venv .venv
-	$(VENV) -m pip install --upgrade pip
-	$(VENV) -m pip install -r $(REQ_TEST)
+.venv: poetry.toml
+	$(POETRY) install
 	touch .venv
+
+.PHONY: lint-ruff
+lint-ruff: .venv
+	$(POETRY) run ruff .
+
+.PHONY: lint-mypy
+lint-mypy: .venv
+	$(POETRY) run mypy .
+
+.PHONY: lint
+lint: lint-ruff lint-mypy
 
 .PHONY: test
 test: .venv
-	$(VENV) -m pytest
+	$(POETRY) run pytest
+
+.PHONY: dev
+dev: lint test

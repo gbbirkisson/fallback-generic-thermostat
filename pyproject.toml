@@ -1,0 +1,102 @@
+[tool.poetry]
+name = "temp"
+version = "0.1.0"
+description = ""
+authors = ["Guðmundur Björn Birkisson <gbbirkisson@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest-homeassistant-custom-component = "^0.13.56"
+pytest-cov = "^4.1.0"
+ruff = "^0.0.291"
+mypy = "^1.5.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+source = ["custom_components"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplemented()",
+  "if __name__ == '__main__':",
+  "main()",
+]
+show_missing = true
+
+[tool.ruff]
+line-length = 88
+exclude = [".venv", "__pycache__", ".mypy_cache"]
+select = [
+  "F", # Pyflakes
+  "E", # ?
+  "W", # pycodestyle
+  "C", # mccabe
+  "I", # isort
+  "N", # pep8-naming
+  # "D",   # pydocstyle
+  "UP",  # pyupgrade
+  "YTT", # flake8-2020
+  # "ANN", # flake8-annotations
+  # "S",   # flake8-bandit
+  "BLE", # flake8-blind-except
+  "FBT", # flake8-boolean-trap
+  "B",   # flake8-bugbear
+  "A",   # flake8-builtins
+  "COM", # flake8-commas
+  "C4",  # flake8-comprehensions
+  "DTZ", # flake8-datetimez
+  "T10", # flake8-debugger
+  "DJ",  # flake8-django
+  "EM",  # flake8-errmsg
+  "EXE", # flake8-executable
+  "ISC", # flake8-implicit-str-concat
+  "ICN", # flake8-import-conventions
+  "G",   # flake8-logging-format
+  "INP", # flake8-no-pep420
+  "PIE", # flake8-pie
+  "T20", # flake8-print
+  "PYI", # flake8-pyi
+  "PT",  # flake8-pytest-style
+  "Q",   # flake8-quotes
+  "RSE", # flake8-raise
+  "RET", # flake8-return
+  "SLF", # flake8-self
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
+  "TCH", # flake8-type-checking
+  # "ARG", # flake8-unused-arguments
+  "PTH", # flake8-use-pathlib
+  "ERA", # eradicate
+  "PD",  # pandas-vet
+  "PGH", # pygrep-hooks
+  "PL",  # Pylint
+  "PLC", # Pylint Convention
+  "PLE", # Pylint Error
+  "PLR", # Pylint Refactor
+  "PLW", # Pylint Warning
+  "TRY", # tryceratops
+  "NPY", # NumPy-specific rules
+  "RUF", # Ruff-specific rules
+]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_errors = true
+follow_imports = "silent"
+ignore_missing_imports = true
+warn_incomplete_stub = true
+warn_redundant_casts = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = "tests"
+norecursedirs = ".git"
+addopts = "--cov=custom_components"
