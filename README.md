@@ -1,6 +1,8 @@
 # Fallback Generic Thermostat for Home Assistant
 
-This component extends the [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/) by adding a fallback mode in case the temperature sensor becomes unavailable.
+The [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/) for Home Assistant has a big problem. If for some reason the temperature sensor becomes unavailable, the controller just keeps the state its in. So it can heat forever, or not heat at all. This is problematic when running Home Assistant in remote locations where physical intervention is not an option.
+
+This component extends the [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/) by adding a fallback mode in case the temperature sensor becomes unavailable. In that mode, the climate controller regulates heat by turning on the heater on for some `%` of time.
 
 <!-- vim-markdown-toc GFM -->
 
@@ -16,7 +18,7 @@ You can install this either manually copying files or using HACS.
 
 ## Usage
 
-Uses the exact same configuration as the [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/), but adds 2 new configuration variables:
+Uses the exact same configuration as the [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/#configuration-variables), but adds 2 new configuration variables:
 
 | Configuration Variable | Description |
 | --- | --- |
@@ -34,7 +36,7 @@ input_boolean:
     name: Force fallback mode
 
 climate:
-  - platform: generic_thermostat
+  - platform: fallback_generic_thermostat
     name: Study
     heater: switch.study_heater
     target_sensor: sensor.study_temperature
