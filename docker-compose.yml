@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  hass:
+    image: homeassistant/home-assistant
+    # user: "1000"
+    ports:
+      - 8123:8123
+    volumes:
+      - hass:/config
+      - ./configuration.yaml:/config/configuration.yaml
+      - ./custom_components:/config/custom_components
+
+volumes:
+  hass:

@@ -1,7 +1,4 @@
-from homeassistant import core
+from homeassistant.const import Platform
 
-
-async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
-    """Set up the Advanced Generic Thermostat component."""
-    # @TODO: Add setup code.
-    return True
+DOMAIN = "fallback_generic_thermostat"
+PLATFORMS = [Platform.CLIMATE]

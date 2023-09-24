@@ -1,0 +1,53 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+input_number:
+  temperature:
+    name: Temperature
+    initial: 20
+    min: 0
+    max: 40
+    step: 1
+
+input_boolean:
+  radiator:
+    name: Radiator
+  force_fallback_mode:
+    name: Force fallback
+  simulate_unavailable:
+    name: Simulate Unavailable
+
+template:
+  - sensor:
+      - name: Temperature
+        state: >
+          {% if is_state('input_boolean.simulate_unavailable', 'on') %}
+            unavailable
+          {% else %}
+            {{ states('input_number.temperature') }}
+          {% endif %}
+
+climate:
+- platform: fallback_generic_thermostat
+  name: Thermostat
+  target_sensor: sensor.temperature
+  heater: input_boolean.radiator
+  min_temp: 16
+  max_temp: 24
+  ac_mode: false
+  target_temp: 20
+  hot_tolerance: 0.3 # How much it over shoots
+  min_cycle_duration:
+    seconds: 1
+  initial_hvac_mode: "heat"
+  precision: 1
+  fallback_on_ratio: 0.3
+  fallback_force_switch: input_boolean.force_fallback_mode

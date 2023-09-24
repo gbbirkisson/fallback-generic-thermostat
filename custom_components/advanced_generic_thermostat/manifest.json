@@ -1,11 +1,11 @@
 {
   "codeowners": ["@gbbirkisson"],
   "config_flow": false,
-  "dependencies": [],
-  "documentation": "https://github.com/gbbirkisson/advanced_generic_thermostat",
-  "domain": "advanced_generic_thermostat",
+  "dependencies": ["sensor", "switch"],
+  "documentation": "https://github.com/gbbirkisson/fallback_generic_thermostat",
+  "domain": "fallback_generic_thermostat",
   "iot_class": "local_polling",
-  "name": "Advanced Generic Thermostat",
+  "name": "Fallback Generic Thermostat",
   "requirements": [],
   "version": "0.1.0"
 }

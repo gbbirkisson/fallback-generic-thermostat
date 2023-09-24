@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "temp"
+name = "fallback-generic-thermostat"
 version = "0.1.0"
 description = ""
 authors = ["Guðmundur Björn Birkisson <gbbirkisson@gmail.com>"]
@@ -9,10 +9,12 @@ readme = "README.md"
 python = "^3.11"
 
 [tool.poetry.group.dev.dependencies]
-pytest-homeassistant-custom-component = "^0.13.56"
-pytest-cov = "^4.1.0"
+homeassistant = "^2023.9.2"
 ruff = "^0.0.291"
 mypy = "^1.5.1"
+pytest = "^7.4.2"
+pytest-coverage = "^0.0"
+pytest-asyncio = "^0.21.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -31,13 +33,13 @@ exclude_lines = [
 show_missing = true
 
 [tool.ruff]
-line-length = 88
+line-length = 94
 exclude = [".venv", "__pycache__", ".mypy_cache"]
 select = [
   "F", # Pyflakes
   "E", # ?
   "W", # pycodestyle
-  "C", # mccabe
+  # "C", # mccabe
   "I", # isort
   "N", # pep8-naming
   # "D",   # pydocstyle
@@ -46,15 +48,15 @@ select = [
   # "ANN", # flake8-annotations
   # "S",   # flake8-bandit
   "BLE", # flake8-blind-except
-  "FBT", # flake8-boolean-trap
-  "B",   # flake8-bugbear
-  "A",   # flake8-builtins
-  "COM", # flake8-commas
+  # "FBT", # flake8-boolean-trap
+  "B", # flake8-bugbear
+  "A", # flake8-builtins
+  # "COM", # flake8-commas
   "C4",  # flake8-comprehensions
   "DTZ", # flake8-datetimez
   "T10", # flake8-debugger
   "DJ",  # flake8-django
-  "EM",  # flake8-errmsg
+  # "EM",  # flake8-errmsg
   "EXE", # flake8-executable
   "ISC", # flake8-implicit-str-concat
   "ICN", # flake8-import-conventions
@@ -68,22 +70,29 @@ select = [
   "RSE", # flake8-raise
   "RET", # flake8-return
   "SLF", # flake8-self
-  "SIM", # flake8-simplify
+  # "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
-  "TCH", # flake8-type-checking
+  # "TCH", # flake8-type-checking
   # "ARG", # flake8-unused-arguments
   "PTH", # flake8-use-pathlib
-  "ERA", # eradicate
+  # "ERA", # eradicate
   "PD",  # pandas-vet
   "PGH", # pygrep-hooks
   "PL",  # Pylint
   "PLC", # Pylint Convention
   "PLE", # Pylint Error
-  "PLR", # Pylint Refactor
+  # "PLR", # Pylint Refactor
   "PLW", # Pylint Warning
-  "TRY", # tryceratops
+  # "TRY", # tryceratops
   "NPY", # NumPy-specific rules
-  "RUF", # Ruff-specific rules
+  # "RUF", # Ruff-specific rules
+]
+ignore = [
+  "PT001",   # Use `@pytest.fixture()` over `@pytest.fixture`
+  "PT004",   # Fixture `x` does not return anything, add leading underscore
+  "PLR0912", # Too many branches
+  "PLR0913", # Too many arguments to function call
+  "F401",    # `x` imported but unused
 ]
 
 [tool.mypy]
