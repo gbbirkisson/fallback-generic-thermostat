@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.11"
 
 [tool.poetry.group.dev.dependencies]
-homeassistant = "^2023.9.2"
+homeassistant = "2023.8.4"
 ruff = "^0.0.291"
 mypy = "^1.5.1"
 pytest = "^7.4.2"

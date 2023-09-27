@@ -1,5 +1,6 @@
 {
   "name": "Fallback Generic Thermostat",
   "render_readme": true,
-  "iot_class": "local_polling"
+  "iot_class": "local_polling",
+  "homeassistant": "2023.8.4"
 }
