@@ -9,6 +9,8 @@ This component extends the [generic-thermostat](https://www.home-assistant.io/in
 * [Installation](#installation)
 * [Usage](#usage)
 * [Example](#example)
+    * [Basic](#basic)
+    * [Full](#full)
 
 <!-- vim-markdown-toc -->
 
@@ -18,17 +20,31 @@ You can install this either manually copying files or using HACS.
 
 ## Usage
 
-Uses the exact same configuration as the [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/#configuration-variables), but adds 2 new configuration variables:
+Uses the exact same configuration as the [generic-thermostat](https://www.home-assistant.io/integrations/generic_thermostat/#configuration-variables), but adds 3 new configuration variables:
 
 | Configuration Variable | Description |
 | --- | --- |
 | `fallback_on_ratio` | A number between `0` and `1` that represents how much of the time the heater switch should be on. This number should be in `0.05` increments e.g. `0.15` or `0.45` |
+| `fallback_interval` | The duration that the `fallback_on_ratio` relates to. This value defaults to `60` minutes.
 |`fallback_force_switch` | A optional switch entity id that forces fallback mode to be enabled. This is useful when you are tweaking `fallback_on_ratio`. |
 
 > [!NOTE]
-> This component will automatically set `keep_alive` to `3` minutes. You can change that value if you want, but you should keep it low.
+> If `fallback_interval` is `60` minutes and `fallback_on_ratio` is `0.2`, the radiator will be on for `12` minutes and off for `48` minutes per hour when the temperature sensor becomes unavailable.
 
 ## Example
+
+### Basic
+
+```yaml
+climate:
+  - platform: fallback_generic_thermostat
+    name: Study
+    heater: switch.study_heater
+    target_sensor: sensor.study_temperature
+    fallback_on_ratio: 0.2 # Heater will be on 20% of the time (12 minutes per hour)
+```
+
+### Full
 
 ```yaml
 input_boolean:
@@ -40,6 +56,7 @@ climate:
     name: Study
     heater: switch.study_heater
     target_sensor: sensor.study_temperature
-    fallback_on_ratio: 0.3 # Heater will be on 30% of the time
+    fallback_on_ratio: 0.5 # Heater will be on 50% of the time (15 minutes per half an hour)
+    fallback_interval: 00:30:00
     fallback_force_switch: input_boolean.force_fallback_mode
 ```

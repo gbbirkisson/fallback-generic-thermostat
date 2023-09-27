@@ -45,5 +45,6 @@ climate:
     seconds: 1
   initial_hvac_mode: "heat"
   precision: 1
-  fallback_on_ratio: 0.3
+  fallback_on_ratio: 0.2
+  fallback_interval: 00:01:00
   fallback_force_switch: input_boolean.force_fallback_mode
