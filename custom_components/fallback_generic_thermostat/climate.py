@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import datetime
 import logging
+from collections.abc import Mapping
 from typing import Any
 
 import homeassistant.helpers.config_validation as cv
@@ -203,6 +204,7 @@ class FallbackGenericThermostat(GenericThermostat):
         self._fallback_force_switch_entity_id = None
         self._sensor_available = True
         self._fallback_forced = False
+        self._static_attributes = {}
 
         if not fallback_on_ratio:
             return
@@ -232,6 +234,11 @@ class FallbackGenericThermostat(GenericThermostat):
             self._fallback_off_duration,
             self.sensor_entity_id,
         )
+        self._static_attributes = {
+            "fallback_on_duration": str(self._fallback_on_duration),
+            "fallback_off_duration": str(self._fallback_off_duration),
+            "fallback_interval": str(self._fallback_interval),
+        }
 
     @override
     async def async_added_to_hass(self) -> None:
@@ -260,12 +267,17 @@ class FallbackGenericThermostat(GenericThermostat):
         if not self._is_fallback_mode_active:
             await super()._async_control_heating(time=time, force=force)
 
-    @override
-    def _async_generate_attributes(self) -> tuple[str, dict[str, Any]]:
-        """Add fallback_mode attribute"""
-        state, attr = super()._async_generate_attributes()
-        attr["fallback_mode"] = STATE_ON if self._is_fallback_mode_active else STATE_OFF
-        return state, attr
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        self._static_attributes.update(
+            {
+                "fallback_mode": STATE_ON
+                if self._is_fallback_mode_active
+                else STATE_OFF,
+                "fallback_forced": STATE_ON if self._fallback_forced else STATE_OFF,
+            }
+        )
+        return self._static_attributes
 
     @override
     async def _async_sensor_changed(
@@ -282,15 +294,17 @@ class FallbackGenericThermostat(GenericThermostat):
                 "Sensor '%s' has become available, exiting fallback mode!",
                 self.sensor_entity_id,
             )
-            await super()._async_sensor_changed(event)
         else:
             self._sensor_available = False
             _LOGGER.warning(
                 "Sensor '%s' has become unavailable, entering fallback mode!",
                 self.sensor_entity_id,
             )
+        if self._is_fallback_mode_active:
             await self._async_control_fallback()
             self.async_write_ha_state()
+        else:
+            await super()._async_sensor_changed(event)
 
     async def _async_control_fallback(self, time=None) -> None:
         """Turn heating on or off depending heater state"""
@@ -345,7 +359,6 @@ class FallbackGenericThermostat(GenericThermostat):
             _LOGGER.info(
                 "Fallback override disabled!",
             )
-
         self.async_write_ha_state()
 
     @property
