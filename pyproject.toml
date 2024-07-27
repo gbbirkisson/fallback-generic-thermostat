@@ -6,10 +6,10 @@ authors = ["Guðmundur Björn Birkisson <gbbirkisson@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.13"
 
 [tool.poetry.group.dev.dependencies]
-homeassistant = "2023.8.4"
+homeassistant = "2024.1.6"
 ruff = "^0.0.291"
 mypy = "^1.5.1"
 pytest = "^7.4.2"
