@@ -6,15 +6,15 @@ authors = ["Guðmundur Björn Birkisson <gbbirkisson@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.13"
+python = ">=3.12,<3.13"
 
 [tool.poetry.group.dev.dependencies]
-homeassistant = "2024.1.6"
+homeassistant = "2024.8.2"
 ruff = "^0.0.291"
-mypy = "^1.5.1"
-pytest = "^7.4.2"
+mypy = "^1.11.1"
+pytest = "^7.4.4"
 pytest-coverage = "^0.0"
-pytest-asyncio = "^0.21.1"
+pytest-asyncio = "^0.21.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -96,13 +96,14 @@ ignore = [
 ]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 ignore_errors = true
 follow_imports = "silent"
 ignore_missing_imports = true
 warn_incomplete_stub = true
 warn_redundant_casts = true
 warn_unused_configs = true
+exclude = [".venv"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

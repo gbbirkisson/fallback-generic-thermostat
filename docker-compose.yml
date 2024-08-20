@@ -1,9 +1,7 @@
 ---
-version: '3'
-
 services:
   hass:
-    image: homeassistant/home-assistant:2024.1.6
+    image: homeassistant/home-assistant:2024.8.2
     # user: "1000"
     ports:
       - 8123:8123

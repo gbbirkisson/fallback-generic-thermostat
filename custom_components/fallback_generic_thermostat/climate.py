@@ -1,31 +1,36 @@
 """Adds support for fallback generic thermostat units."""
+
 from __future__ import annotations
 
 import datetime
 import logging
 from collections.abc import Mapping
+from functools import cached_property
 from typing import Any
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant.components.climate import PLATFORM_SCHEMA, HVACMode
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import HVACMode
 from homeassistant.components.generic_thermostat.climate import (
+    CONF_INITIAL_HVAC_MODE,
+    CONF_KEEP_ALIVE,
+    CONF_MAX_TEMP,
+    CONF_MIN_TEMP,
+    CONF_PRECISION,
+    CONF_TARGET_TEMP,
+    CONF_TEMP_STEP,
+    GenericThermostat,
+)
+from homeassistant.components.generic_thermostat.const import (
     CONF_AC_MODE,
     CONF_COLD_TOLERANCE,
     CONF_HEATER,
     CONF_HOT_TOLERANCE,
-    CONF_INITIAL_HVAC_MODE,
-    CONF_KEEP_ALIVE,
-    CONF_MAX_TEMP,
     CONF_MIN_DUR,
-    CONF_MIN_TEMP,
-    CONF_PRECISION,
     CONF_PRESETS,
     CONF_SENSOR,
-    CONF_TARGET_TEMP,
-    CONF_TEMP_STEP,
     DEFAULT_TOLERANCE,
-    GenericThermostat,
 )
 from homeassistant.const import (
     CONF_NAME,
@@ -38,7 +43,7 @@ from homeassistant.const import (
     STATE_UNAVAILABLE,
     STATE_UNKNOWN,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import Event, HomeAssistant
 from homeassistant.exceptions import ConditionError
 from homeassistant.helpers import condition
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -48,7 +53,7 @@ from homeassistant.helpers.event import (
     async_track_time_interval,
 )
 from homeassistant.helpers.reload import async_setup_reload_service
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, EventType
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from typing_extensions import override
 
 from . import DOMAIN, PLATFORMS
@@ -128,6 +133,7 @@ async def async_setup_platform(
     async_add_entities(
         [
             FallbackGenericThermostat(
+                hass,
                 name,
                 heater_entity_id,
                 sensor_entity_id,
@@ -156,6 +162,7 @@ async def async_setup_platform(
 class FallbackGenericThermostat(GenericThermostat):
     def __init__(
         self,
+        hass: HomeAssistant,
         name,
         heater_entity_id,
         sensor_entity_id,
@@ -179,6 +186,7 @@ class FallbackGenericThermostat(GenericThermostat):
     ):
         """Initialize the thermostat."""
         super().__init__(
+            hass,
             name,
             heater_entity_id,
             sensor_entity_id,
@@ -267,22 +275,20 @@ class FallbackGenericThermostat(GenericThermostat):
         if not self._is_fallback_mode_active:
             await super()._async_control_heating(time=time, force=force)
 
-    @property
+    @cached_property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         self._static_attributes.update(
             {
-                "fallback_mode": STATE_ON
-                if self._is_fallback_mode_active
-                else STATE_OFF,
+                "fallback_mode": (
+                    STATE_ON if self._is_fallback_mode_active else STATE_OFF
+                ),
                 "fallback_forced": STATE_ON if self._fallback_forced else STATE_OFF,
             }
         )
         return self._static_attributes
 
     @override
-    async def _async_sensor_changed(
-        self, event: EventType[EventStateChangedData]
-    ) -> None:
+    async def _async_sensor_changed(self, event: Event[EventStateChangedData]) -> None:
         """Handle temperature changes."""
         new_state = event.data["new_state"]
         if new_state is not None and new_state.state not in (
@@ -290,7 +296,7 @@ class FallbackGenericThermostat(GenericThermostat):
             STATE_UNKNOWN,
         ):
             self._sensor_available = True
-            _LOGGER.info(
+            _LOGGER.warning(
                 "Sensor '%s' has become available, exiting fallback mode!",
                 self.sensor_entity_id,
             )
@@ -344,7 +350,7 @@ class FallbackGenericThermostat(GenericThermostat):
                         await self._async_heater_turn_on()
 
     async def _async_override_changed(
-        self, event: EventType[EventStateChangedData]
+        self, event: Event[EventStateChangedData]
     ) -> None:
         """User has enabled fallback override"""
         new_state = event.data["new_state"]
