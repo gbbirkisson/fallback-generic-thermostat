@@ -6,7 +6,7 @@ POETRY:=poetry
 
 .PHONY: lint-ruff
 lint-ruff: .venv
-	$(POETRY) run ruff .
+	$(POETRY) run ruff check .
 
 .PHONY: lint-mypy
 lint-mypy: .venv

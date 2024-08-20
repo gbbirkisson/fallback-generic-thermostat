@@ -10,7 +10,7 @@ python = ">=3.12,<3.13"
 
 [tool.poetry.group.dev.dependencies]
 homeassistant = "2024.8.2"
-ruff = "^0.0.291"
+ruff = "^0.6.0"
 mypy = "^1.11.1"
 pytest = "^8.0.0"
 pytest-coverage = "^0.0"
@@ -35,6 +35,8 @@ show_missing = true
 [tool.ruff]
 line-length = 94
 exclude = [".venv", "__pycache__", ".mypy_cache"]
+
+[lint]
 select = [
   "F", # Pyflakes
   "E", # ?

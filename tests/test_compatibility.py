@@ -1,6 +1,4 @@
 import hashlib
-import optparse
-import os
 from urllib.request import urlopen
 
 import pytest
