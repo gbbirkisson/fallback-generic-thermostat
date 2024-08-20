@@ -14,7 +14,7 @@ ruff = "^0.0.291"
 mypy = "^1.11.1"
 pytest = "^7.4.4"
 pytest-coverage = "^0.0"
-pytest-asyncio = "^0.21.2"
+pytest-asyncio = "^0.23.0"
 
 [build-system]
 requires = ["poetry-core"]
