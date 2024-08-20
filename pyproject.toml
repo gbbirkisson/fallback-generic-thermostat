@@ -12,7 +12,7 @@ python = ">=3.12,<3.13"
 homeassistant = "2024.8.2"
 ruff = "^0.0.291"
 mypy = "^1.11.1"
-pytest = "^7.4.4"
+pytest = "^8.0.0"
 pytest-coverage = "^0.0"
 pytest-asyncio = "^0.23.0"
 
