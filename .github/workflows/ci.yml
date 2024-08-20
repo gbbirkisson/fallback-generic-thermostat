@@ -1,0 +1,29 @@
+---
+name: CI
+
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: Run ${{ matrix.target }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["lint-mypy", "lint-ruff", "test"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        uses: jdx/mise-action@v2
+
+      - name: Run ${{ matrix.target }}
+        run: make ${{ matrix.target }}
